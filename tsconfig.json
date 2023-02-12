@@ -1,0 +1,10 @@
+{
+	"extends": "@sindresorhus/tsconfig",
+	"compilerOptions": {
+		"module": "NodeNext",
+		"jsx": "react",
+		"esModuleInterop": true,
+		"outDir": "dist"
+	},
+	"include": ["source"]
+}
