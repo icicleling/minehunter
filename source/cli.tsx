@@ -3,6 +3,8 @@ import React from "react";
 import { render } from "ink";
 import meow from "meow";
 import App from "./ui.js";
+import store from "./store.js";
+import { Provider } from "react-redux/lib/alternate-renderers.js";
 
 const cli = meow(
   `
@@ -26,4 +28,8 @@ const cli = meow(
   }
 );
 
-render(<App name={cli.flags.name} />);
+render(
+  <Provider store={store}>
+    <App name={cli.flags.name} />
+  </Provider>
+);

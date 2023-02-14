@@ -17,9 +17,11 @@
 		"dist/cli.js"
 	],
 	"dependencies": {
+		"@reduxjs/toolkit": "^1.9.2",
 		"ink": "^3.2.0",
 		"meow": "^11.0.0",
-		"react": "^18.2.0"
+		"react": "^18.2.0",
+		"react-redux": "^7.2.9"
 	},
 	"ava": {
 		"typescript": {
@@ -41,6 +43,7 @@
 		"@ava/typescript": "^3.0.1",
 		"@sindresorhus/tsconfig": "^3.0.1",
 		"@types/react": "^18.0.28",
+		"@types/react-redux": "^7.1.25",
 		"ava": "^5.2.0",
 		"chalk": "^4.1.2",
 		"eslint-config-xo-react": "^0.27.0",
