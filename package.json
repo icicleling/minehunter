@@ -1,57 +1,59 @@
 {
-	"name": "minehunter",
-	"version": "0.0.0",
-	"license": "MIT",
-	"bin": "dist/cli.js",
-	"engines": {
-		"node": ">=14.16"
-	},
-	"type": "module",
-	"scripts": {
-		"build": "rimraf dist && node build.js",
-		"start": "npm run build && node dist/cli.js",
-		"pretest": "npm run build",
-		"test": "xo && ava"
-	},
-	"files": [
-		"dist/cli.js"
-	],
-	"ava": {
-		"typescript": {
-			"extensions": [
-				"tsx"
-			],
-			"rewritePaths": {
-				"source/": "dist/"
-			}
-		}
-	},
-	"xo": {
-		"extends": "xo-react",
-		"rules": {
-			"react/prop-types": "off"
-		}
-	},
-	"devDependencies": {
-		"@ava/typescript": "^3.0.1",
-		"@reduxjs/toolkit": "^1.9.2",
-		"@sindresorhus/tsconfig": "^3.0.1",
-		"@types/react": "^18.0.28",
-		"@types/react-redux": "^7.1.25",
-		"ava": "^5.2.0",
-		"chalk": "^4.1.2",
-		"esbuild": "^0.17.8",
-		"eslint-config-xo-react": "^0.27.0",
-		"eslint-plugin-react": "^7.32.2",
-		"eslint-plugin-react-hooks": "^4.6.0",
-		"ink": "^3.2.0",
-		"ink-testing-library": "^2.1.0",
-		"meow": "^11.0.0",
-		"prettier": "2.8.4",
-		"react": "^18.2.0",
-		"react-redux": "^7.2.9",
-		"rimraf": "^4.1.2",
-		"typescript": "^4.9.5",
-		"xo": "^0.53.1"
-	}
+  "name": "minehunter",
+  "version": "0.0.0",
+  "license": "MIT",
+  "bin": "dist/cli.js",
+  "engines": {
+    "node": ">=14.16"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "rimraf dist && node build.js",
+    "start": "ts-node --files --esm source/cli.tsx",
+    "pretest": "npm run build",
+    "test": "xo && ava"
+  },
+  "files": [
+    "dist/cli.js"
+  ],
+  "ava": {
+    "typescript": {
+      "extensions": [
+        "tsx"
+      ],
+      "rewritePaths": {
+        "source/": "dist/"
+      }
+    }
+  },
+  "xo": {
+    "extends": "xo-react",
+    "rules": {
+      "react/prop-types": "off"
+    }
+  },
+  "devDependencies": {
+    "@ava/typescript": "^3.0.1",
+    "@reduxjs/toolkit": "^1.9.2",
+    "@sindresorhus/tsconfig": "^3.0.1",
+    "@types/react": "^18.0.28",
+    "@types/react-redux": "^7.1.25",
+    "ava": "^5.2.0",
+    "chalk": "^4.1.2",
+    "esbuild": "^0.17.8",
+    "eslint-config-xo-react": "^0.27.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "ink": "^3.2.0",
+    "ink-testing-library": "^2.1.0",
+    "meow": "^11.0.0",
+    "prettier": "2.8.4",
+    "random-int": "^3.0.0",
+    "react": "^18.2.0",
+    "react-redux": "^7.2.9",
+    "rimraf": "^4.1.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "xo": "^0.53.1"
+  }
 }
