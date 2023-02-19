@@ -1,6 +1,6 @@
 # minehunter
 
-命令行的扫雷游戏
+命令行中的扫雷游戏
 
 Minesweeper game in command line
 

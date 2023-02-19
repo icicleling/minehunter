@@ -1,6 +1,7 @@
 {
   "name": "minehunter",
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "Minesweeper game in command line",
   "license": "Apache-2.0",
   "bin": "dist/cli.js",
   "engines": {
@@ -10,12 +11,24 @@
   "scripts": {
     "build": "rimraf dist && node build.js",
     "start": "ts-node --files --esm source/cli.tsx",
+    "prepublishOnly": "npm run build",
     "pretest": "npm run build",
     "test": "xo && ava"
   },
   "files": [
     "dist/cli.js"
   ],
+  "author": "icicleling",
+  "homepage": "https://github.com/icicleling/minehunter",
+  "keywords": [
+    "minesweeper",
+    "game",
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/icicleling/minehunter.git"
+  },
   "ava": {
     "typescript": {
       "extensions": [
