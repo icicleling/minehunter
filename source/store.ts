@@ -9,9 +9,9 @@ import {
 } from "./utils.js";
 const { configureStore, createSlice } = reduxToolkit;
 
-export const FIELD_WIDTH_SIZE = 5;
-export const FIELD_HEIGHT_SIZE = 5;
-export const MINES_COUNT = 4;
+export const FIELD_WIDTH_SIZE = 9;
+export const FIELD_HEIGHT_SIZE = 9;
+export const MINES_COUNT = 10;
 
 const cells: Cell[][] = getReadyCells(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE);
 
