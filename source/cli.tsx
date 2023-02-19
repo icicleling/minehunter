@@ -12,12 +12,11 @@ meow(
 	Usage
 	  $ minehunter
 
-	Options
-		--name  Your name
-
-	Examples
-	  $ minehunter --name=Jane
-	  Hello, Jane
+  Game Operation
+    [↑/↓/←/→]  Move
+    [space]    Open cell
+    [f]        Flag
+    [r]        Restart
 `,
   {
     importMeta: import.meta,
