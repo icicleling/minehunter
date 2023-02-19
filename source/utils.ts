@@ -13,12 +13,20 @@ const getAllPositions = (
 export const generateMinePositions = (
   fieldWidth: number,
   fieldHeight: number,
-  minesCount: number
+  minesCount: number,
+  firstOpenPosition: Position
 ) => {
+  const noMinePositions = getAroundPositions(
+    fieldWidth,
+    fieldHeight,
+    firstOpenPosition
+  ).concat([firstOpenPosition]);
+
+  const allPositions = getAllPositions(fieldWidth, fieldHeight).filter(
+    ([x, y]) => !noMinePositions.find(([nx, ny]) => nx === x && ny === y)
+  );
+
   const minePostions: Position[] = [];
-
-  const allPositions = getAllPositions(fieldWidth, fieldHeight);
-
   for (let i = 0; i < minesCount; i++) {
     const index = randomInteger(0, allPositions.length - 1);
     minePostions.push(allPositions[index]!);
@@ -27,7 +35,7 @@ export const generateMinePositions = (
   return minePostions;
 };
 
-const getAroundPositions = (
+export const getAroundPositions = (
   fieldWidth: number,
   fieldHeight: number,
   [x, y]: Position

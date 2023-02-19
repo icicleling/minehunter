@@ -1,6 +1,10 @@
 import reduxToolkit from "@reduxjs/toolkit";
-import { Cell, GameStore } from "./interface.js";
-import { generateMinePositions, getAroundMinesTotal } from "./utils.js";
+import { Cell, GameStore, Position } from "./interface.js";
+import {
+  generateMinePositions,
+  getAroundMinesTotal,
+  getAroundPositions,
+} from "./utils.js";
 const { configureStore, createSlice } = reduxToolkit;
 
 const FIELD_WIDTH_SIZE = 9;
@@ -33,7 +37,8 @@ const gameStore = createSlice({
         const minePostions = generateMinePositions(
           FIELD_WIDTH_SIZE,
           FIELD_HEIGHT_SIZE,
-          MINES_COUNT
+          MINES_COUNT,
+          state.cursorPosition
         );
 
         minePostions.forEach(([x, y]) => {
@@ -53,10 +58,21 @@ const gameStore = createSlice({
 
         state.status = "playing";
       }
-      const [x, y] = state.cursorPosition;
-      const cell = state.cells[y]![x]!;
-      if (cell.isFlag) return;
-      cell.isOpen = true;
+
+      const openCell = ([x, y]: Position) => {
+        const cell = state.cells[y]![x]!;
+        if (cell.isFlag || cell.isOpen) return;
+        cell.isOpen = true;
+
+        if (cell.isMine || cell.minesAround) return;
+        const aroundPositions = getAroundPositions(
+          FIELD_WIDTH_SIZE,
+          FIELD_HEIGHT_SIZE,
+          [x, y]
+        );
+        aroundPositions.map((position) => openCell(position));
+      };
+      openCell(state.cursorPosition);
     },
     flag(state) {
       const [x, y] = state.cursorPosition;
