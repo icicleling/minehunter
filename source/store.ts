@@ -1,26 +1,19 @@
 import reduxToolkit from "@reduxjs/toolkit";
 import { Cell, GameStore, Position } from "./interface.js";
 import {
+  checkWin,
   generateMinePositions,
   getAroundMinesTotal,
   getAroundPositions,
+  getReadyCells,
 } from "./utils.js";
 const { configureStore, createSlice } = reduxToolkit;
 
-const FIELD_WIDTH_SIZE = 9;
-const FIELD_HEIGHT_SIZE = 9;
-const MINES_COUNT = 10;
+export const FIELD_WIDTH_SIZE = 9;
+export const FIELD_HEIGHT_SIZE = 9;
+export const MINES_COUNT = 10;
 
-const cells: Cell[][] = [...Array(FIELD_WIDTH_SIZE).keys()].map(() =>
-  [...Array(FIELD_HEIGHT_SIZE).keys()].map(
-    (): Cell => ({
-      isMine: false,
-      isFlag: false,
-      isOpen: false,
-      minesAround: 0,
-    })
-  )
-);
+const cells: Cell[][] = getReadyCells(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE);
 
 const initialState: GameStore = {
   cells,
@@ -33,6 +26,7 @@ const gameStore = createSlice({
   initialState,
   reducers: {
     open(state) {
+      if (state.status === "fail") return;
       if (state.status === "ready") {
         const minePostions = generateMinePositions(
           FIELD_WIDTH_SIZE,
@@ -63,6 +57,7 @@ const gameStore = createSlice({
         const cell = state.cells[y]![x]!;
         if (cell.isFlag || cell.isOpen) return;
         cell.isOpen = true;
+        if (cell.isMine === true) state.status = "fail";
 
         if (cell.isMine || cell.minesAround) return;
         const aroundPositions = getAroundPositions(
@@ -73,11 +68,20 @@ const gameStore = createSlice({
         aroundPositions.map((position) => openCell(position));
       };
       openCell(state.cursorPosition);
+
+      if (checkWin(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE, state.cells))
+        state.status = "win";
     },
     flag(state) {
+      if (state.status === "fail") return;
       const [x, y] = state.cursorPosition;
       const cell = state.cells[y]![x]!;
       cell.isFlag = !cell.isFlag;
+    },
+    restart(state) {
+      state.cells = initialState.cells;
+      state.cursorPosition = initialState.cursorPosition;
+      state.status = initialState.status;
     },
     up(state) {
       const [x, y] = state.cursorPosition;

@@ -9,7 +9,7 @@ const Grid = () => {
   const dispatch = useDispatch();
   const cells = useSelector((state: RootState) => state.cells);
   const [x, y] = useSelector((state: RootState) => state.cursorPosition);
-  const { up, down, left, right, open, flag } = actions;
+  const { up, down, left, right, open, flag, restart } = actions;
 
   useInput((input, { upArrow, downArrow, leftArrow, rightArrow }) => {
     upArrow && dispatch(up());
@@ -18,10 +18,11 @@ const Grid = () => {
     rightArrow && dispatch(right());
     input === " " && dispatch(open());
     input === "f" && dispatch(flag());
+    input === "r" && dispatch(restart());
   });
 
   return (
-    <Box flexDirection="column" borderStyle="single">
+    <Box flexDirection="column" alignSelf="flex-start" borderStyle="single">
       {cells.map((row, ri) => {
         return (
           <Box key={ri}>

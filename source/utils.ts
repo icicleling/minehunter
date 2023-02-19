@@ -1,7 +1,7 @@
 import randomInteger from "random-int";
-import { GameStore, Position } from "./interface.js";
+import { Cell, GameStore, Position } from "./interface.js";
 
-const getAllPositions = (
+export const getAllPositions = (
   fieldWidth: number,
   fieldHeight: number
 ): Position[] => {
@@ -63,4 +63,37 @@ export const getAroundMinesTotal = (
     if (cells[y]![x]!.isMine) return prev + 1;
     return prev;
   }, 0);
+};
+
+export const getReadyCells = (
+  fieldWidth: number,
+  fieldHeight: number
+): GameStore["cells"] =>
+  [...Array(fieldWidth).keys()].map(() =>
+    [...Array(fieldHeight).keys()].map(
+      (): Cell => ({
+        isMine: false,
+        isFlag: false,
+        isOpen: false,
+        minesAround: 0,
+      })
+    )
+  );
+
+export const checkWin = (
+  fieldWidth: number,
+  fieldHeight: number,
+  cells: Readonly<GameStore["cells"]>
+): boolean => {
+  const allPositions = getAllPositions(fieldWidth, fieldHeight);
+
+  const openAllNoMine = allPositions
+    .filter(([x, y]) => !cells[y]![x]!.isMine)
+    .every(([x, y]) => cells[y]![x]!.isOpen);
+
+  const flagAllMine = allPositions
+    .filter(([x, y]) => cells[y]![x]!.isMine)
+    .every(([x, y]) => cells[y]![x]!.isFlag);
+
+  return openAllNoMine || flagAllMine;
 };
