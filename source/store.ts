@@ -81,18 +81,22 @@ const gameStore = createSlice({
     },
     up(state) {
       const [x, y] = state.cursorPosition;
+      if (y - 1 < 0) return;
       state.cursorPosition = [x, y - 1];
     },
     down(state) {
       const [x, y] = state.cursorPosition;
+      if (y + 1 > FIELD_HEIGHT_SIZE - 1) return;
       state.cursorPosition = [x, y + 1];
     },
     left(state) {
       const [x, y] = state.cursorPosition;
+      if (x - 1 < 0) return;
       state.cursorPosition = [x - 1, y];
     },
     right(state) {
       const [x, y] = state.cursorPosition;
+      if (x + 1 > FIELD_WIDTH_SIZE - 1) return;
       state.cursorPosition = [x + 1, y];
     },
   },
