@@ -9,9 +9,9 @@ import {
 } from "./utils.js";
 const { configureStore, createSlice } = reduxToolkit;
 
-export const FIELD_WIDTH_SIZE = 9;
-export const FIELD_HEIGHT_SIZE = 9;
-export const MINES_COUNT = 10;
+export const FIELD_WIDTH_SIZE = 5;
+export const FIELD_HEIGHT_SIZE = 5;
+export const MINES_COUNT = 4;
 
 const cells: Cell[][] = getReadyCells(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE);
 
@@ -26,7 +26,7 @@ const gameStore = createSlice({
   initialState,
   reducers: {
     open(state) {
-      if (state.status === "fail") return;
+      if (state.status === "win" || state.status === "fail") return;
       if (state.status === "ready") {
         const minePostions = generateMinePositions(
           FIELD_WIDTH_SIZE,
@@ -73,10 +73,12 @@ const gameStore = createSlice({
         state.status = "win";
     },
     flag(state) {
-      if (state.status === "fail") return;
+      if (state.status === "win" || state.status === "fail") return;
       const [x, y] = state.cursorPosition;
       const cell = state.cells[y]![x]!;
       cell.isFlag = !cell.isFlag;
+      if (checkWin(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE, state.cells))
+        state.status = "win";
     },
     restart(state) {
       state.cells = initialState.cells;

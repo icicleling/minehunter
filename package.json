@@ -1,6 +1,6 @@
 {
   "name": "minehunter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Minesweeper game in command line",
   "license": "Apache-2.0",
   "bin": "dist/cli.js",

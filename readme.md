@@ -36,4 +36,5 @@ $ minehunter --help
     [space]    Open cell
     [f]        Flag
     [r]        Restart
+    [q]        Quit
 ```

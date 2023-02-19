@@ -17,6 +17,7 @@ meow(
     [space]    Open cell
     [f]        Flag
     [r]        Restart
+    [q]        Quit
 `,
   {
     importMeta: import.meta,
