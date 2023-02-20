@@ -36,7 +36,9 @@ const gameStore = createSlice({
         );
 
         minePostions.forEach(([x, y]) => {
-          state.cells[y]![x]!.isMine = true;
+          const cell = state.cells[y]?.[x];
+          if (!cell) return;
+          cell.isMine = true;
         });
 
         state.cells.forEach((row, y) => {
@@ -54,7 +56,9 @@ const gameStore = createSlice({
       }
 
       const openCell = ([x, y]: Position) => {
-        const cell = state.cells[y]![x]!;
+        const cell = state.cells[y]?.[x];
+        if (!cell) return;
+
         if (cell.isFlag || cell.isOpen) return;
         cell.isOpen = true;
         if (cell.isMine === true) state.status = "fail";
@@ -74,9 +78,12 @@ const gameStore = createSlice({
     },
     flag(state) {
       if (state.status === "win" || state.status === "fail") return;
+
       const [x, y] = state.cursorPosition;
-      const cell = state.cells[y]![x]!;
+      const cell = state.cells[y]?.[x];
+      if (!cell) return;
       cell.isFlag = !cell.isFlag;
+
       if (checkWin(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE, state.cells))
         state.status = "win";
     },

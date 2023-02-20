@@ -17,7 +17,7 @@ const Header = () => {
   const unflagMineCount = useMemo(() => {
     const allPosition = getAllPositions(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE);
     const allFlagCount = allPosition.filter(
-      ([x, y]) => cells[y]![x]!.isFlag
+      ([x, y]) => cells[y]?.[x]?.isFlag
     ).length;
     return MINES_COUNT - allFlagCount;
   }, [cells]);

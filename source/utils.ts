@@ -15,7 +15,7 @@ export const generateMinePositions = (
   fieldHeight: number,
   minesCount: number,
   firstOpenPosition: Position
-) => {
+): Position[] => {
   const noMinePositions = getAroundPositions(
     fieldWidth,
     fieldHeight,
@@ -29,7 +29,9 @@ export const generateMinePositions = (
   const minePostions: Position[] = [];
   for (let i = 0; i < minesCount; i++) {
     const index = randomInteger(0, allPositions.length - 1);
-    minePostions.push(allPositions[index]!);
+    const position = allPositions[index];
+    if (!position) throw RangeError();
+    minePostions.push(position);
     allPositions.splice(index, 1);
   }
   return minePostions;
@@ -60,7 +62,7 @@ export const getAroundMinesTotal = (
   const aroundPositions = getAroundPositions(fieldWidth, fieldHeight, [x, y]);
 
   return aroundPositions.reduce((prev, [x, y]) => {
-    if (cells[y]![x]!.isMine) return prev + 1;
+    if (cells[y]?.[x]?.isMine) return prev + 1;
     return prev;
   }, 0);
 };
@@ -88,12 +90,12 @@ export const checkWin = (
   const allPositions = getAllPositions(fieldWidth, fieldHeight);
 
   const openAllNoMine = allPositions
-    .filter(([x, y]) => !cells[y]![x]!.isMine)
-    .every(([x, y]) => cells[y]![x]!.isOpen);
+    .filter(([x, y]) => !cells[y]?.[x]?.isMine)
+    .every(([x, y]) => cells[y]?.[x]?.isOpen);
 
   const flagAllMine = allPositions
-    .filter(([x, y]) => cells[y]![x]!.isMine)
-    .every(([x, y]) => cells[y]![x]!.isFlag);
+    .filter(([x, y]) => cells[y]?.[x]?.isMine)
+    .every(([x, y]) => cells[y]?.[x]?.isFlag);
 
   return openAllNoMine || flagAllMine;
 };
