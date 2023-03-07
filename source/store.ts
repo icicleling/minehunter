@@ -5,6 +5,7 @@ import {
   generateMinePositions,
   getAroundMinesTotal,
   getAroundPositions,
+  getFieldSize,
   getReadyCells,
 } from "./utils.js";
 const { configureStore, createSlice } = reduxToolkit;
@@ -15,7 +16,7 @@ export const MINES_COUNT = 10;
 
 const cells: Cell[][] = getReadyCells(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE);
 
-const initialState: GameStore = {
+export const initialState: GameStore = {
   cells,
   status: "ready",
   cursorPosition: [0, 0],
@@ -43,12 +44,7 @@ const gameStore = createSlice({
 
         state.cells.forEach((row, y) => {
           row.forEach((cell, x) => {
-            cell.minesAround = getAroundMinesTotal(
-              FIELD_WIDTH_SIZE,
-              FIELD_HEIGHT_SIZE,
-              [x, y],
-              state.cells
-            );
+            cell.minesAround = getAroundMinesTotal([x, y], state.cells);
           });
         });
 
@@ -64,28 +60,26 @@ const gameStore = createSlice({
         if (cell.isMine === true) state.status = "fail";
 
         if (cell.isMine || cell.minesAround) return;
-        const aroundPositions = getAroundPositions(
-          FIELD_WIDTH_SIZE,
-          FIELD_HEIGHT_SIZE,
-          [x, y]
-        );
+        const { fieldWidth, fieldHeight } = getFieldSize(state.cells);
+        const aroundPositions = getAroundPositions(fieldWidth, fieldHeight, [
+          x,
+          y,
+        ]);
         aroundPositions.map((position) => openCell(position));
       };
       openCell(state.cursorPosition);
 
-      if (checkWin(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE, state.cells))
-        state.status = "win";
+      if (checkWin(state.cells)) state.status = "win";
     },
     flag(state) {
-      if (state.status === "win" || state.status === "fail") return;
+      if (state.status !== "playing") return;
 
       const [x, y] = state.cursorPosition;
       const cell = state.cells[y]?.[x];
-      if (!cell) return;
+      if (!cell || cell.isOpen) return;
       cell.isFlag = !cell.isFlag;
 
-      if (checkWin(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE, state.cells))
-        state.status = "win";
+      if (checkWin(state.cells)) state.status = "win";
     },
     restart(state) {
       state.cells = initialState.cells;
@@ -115,7 +109,7 @@ const gameStore = createSlice({
   },
 });
 
-export const { actions } = gameStore;
+export const { actions, reducer } = gameStore;
 
 const store = configureStore({
   reducer: gameStore.reducer,

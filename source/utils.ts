@@ -54,11 +54,10 @@ export const getAroundPositions = (
 };
 
 export const getAroundMinesTotal = (
-  fieldWidth: number,
-  fieldHeight: number,
   [x, y]: Position,
   cells: Readonly<GameStore["cells"]>
 ) => {
+  const { fieldWidth, fieldHeight } = getFieldSize(cells);
   const aroundPositions = getAroundPositions(fieldWidth, fieldHeight, [x, y]);
 
   return aroundPositions.reduce((prev, [x, y]) => {
@@ -67,27 +66,32 @@ export const getAroundMinesTotal = (
   }, 0);
 };
 
+export const getCell = (cell?: Partial<Cell>): Cell => ({
+  isMine: false,
+  isFlag: false,
+  isOpen: false,
+  minesAround: 0,
+  ...cell,
+});
+
 export const getReadyCells = (
   fieldWidth: number,
   fieldHeight: number
 ): GameStore["cells"] =>
   [...Array(fieldWidth).keys()].map(() =>
-    [...Array(fieldHeight).keys()].map(
-      (): Cell => ({
-        isMine: false,
-        isFlag: false,
-        isOpen: false,
-        minesAround: 0,
-      })
-    )
+    [...Array(fieldHeight).keys()].map((): Cell => getCell())
   );
 
-export const checkWin = (
-  fieldWidth: number,
-  fieldHeight: number,
-  cells: Readonly<GameStore["cells"]>
-): boolean => {
+export const checkWin = (cells: Readonly<GameStore["cells"]>): boolean => {
+  const { fieldWidth, fieldHeight } = getFieldSize(cells);
+  if (!fieldWidth || !fieldHeight) return false;
+
   const allPositions = getAllPositions(fieldWidth, fieldHeight);
+
+  const isOpenedMine = allPositions.some(
+    ([x, y]) => cells[y]?.[x]?.isMine && cells[y]?.[x]?.isOpen
+  );
+  if (isOpenedMine) return false;
 
   const openAllNoMine = allPositions
     .filter(([x, y]) => !cells[y]?.[x]?.isMine)
@@ -98,4 +102,12 @@ export const checkWin = (
     .every(([x, y]) => cells[y]?.[x]?.isFlag);
 
   return openAllNoMine || flagAllMine;
+};
+
+export const getFieldSize = (
+  cells: Readonly<GameStore["cells"]>
+): { fieldWidth: number; fieldHeight: number } => {
+  const fieldWidth = cells[0]?.length || 0;
+  const fieldHeight = cells.length;
+  return { fieldWidth, fieldHeight };
 };

@@ -13,7 +13,8 @@
     "start": "ts-node --files --esm source/cli.tsx",
     "lint": "eslint ./source",
     "prepublishOnly": "npm run build",
-    "test": "ava"
+    "test": "c8 ava",
+    "test:dev": "ava -w"
   },
   "files": [
     "dist/cli.js"
@@ -30,17 +31,14 @@
     "url": "https://github.com/icicleling/minehunter.git"
   },
   "ava": {
-    "typescript": {
-      "extensions": [
-        "tsx"
-      ],
-      "rewritePaths": {
-        "source/": "dist/"
-      }
-    }
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=ts-node/esm"
+    ]
   },
   "devDependencies": {
-    "@ava/typescript": "^3.0.1",
     "@reduxjs/toolkit": "^1.9.2",
     "@sindresorhus/tsconfig": "^3.0.1",
     "@types/react": "^18.0.28",
@@ -48,6 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "ava": "^5.2.0",
+    "c8": "^7.13.0",
     "chalk": "^4.1.2",
     "esbuild": "^0.17.8",
     "eslint": "^8.34.0",
