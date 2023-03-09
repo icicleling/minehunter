@@ -25,7 +25,7 @@ const Header = () => {
   if (status === "playing")
     return (
       <Text>
-        mines: <Text color="blue">{unflagMineCount}</Text>
+        mines: <Text color="blueBright">{unflagMineCount}</Text>
       </Text>
     );
 
