@@ -1,7 +1,8 @@
-import { Box, Text, useInput } from "ink";
+import { Box, useInput } from "ink";
 import React from "react";
 import reactRedux from "react-redux/lib/alternate-renderers.js";
 import { actions, RootState } from "../store.js";
+import FieldCell from "./FieldCell.js";
 
 const { useDispatch, useSelector } = reactRedux;
 
@@ -27,18 +28,7 @@ const Grid = () => {
         return (
           <Box key={ri}>
             {row.map((cell, ci) => (
-              <Text
-                key={ci}
-                backgroundColor={x === ci && y === ri ? "blue" : undefined}
-              >
-                {cell.isOpen
-                  ? cell.isMine
-                    ? "*"
-                    : cell.minesAround || " "
-                  : cell.isFlag
-                  ? "F"
-                  : "#"}
-              </Text>
+              <FieldCell key={ci} cell={cell} focus={x === ci && y === ri} />
             ))}
           </Box>
         );

@@ -22,9 +22,14 @@ const Header = () => {
     return MINES_COUNT - allFlagCount;
   }, [cells]);
 
-  if (status === "playing") return <Text>mines: {unflagMineCount}</Text>;
+  if (status === "playing")
+    return (
+      <Text>
+        mines: <Text color="blue">{unflagMineCount}</Text>
+      </Text>
+    );
 
-  if (status === "win") return <Text>Your Win!</Text>;
+  if (status === "win") return <Text color="green">Your Win!</Text>;
 
   if (status === "fail") return <Text>Game Over</Text>;
 
