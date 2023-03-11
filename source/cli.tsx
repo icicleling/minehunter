@@ -4,8 +4,7 @@ import { render } from "ink";
 import meow from "meow";
 import App from "./ui.js";
 import store from "./store.js";
-import reactRedux from "react-redux/lib/alternate-renderers.js";
-const { Provider } = reactRedux;
+import { Provider } from "react-redux/es/alternate-renderers.js";
 
 meow(
   `

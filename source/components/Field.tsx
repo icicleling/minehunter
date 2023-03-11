@@ -1,10 +1,11 @@
 import { Box, useInput } from "ink";
 import React from "react";
-import reactRedux from "react-redux/lib/alternate-renderers.js";
+import {
+  useDispatch,
+  useSelector,
+} from "react-redux/es/alternate-renderers.js";
 import { actions, RootState } from "../store.js";
 import FieldCell from "./FieldCell.js";
-
-const { useDispatch, useSelector } = reactRedux;
 
 const Grid = () => {
   const dispatch = useDispatch();

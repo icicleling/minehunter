@@ -1,6 +1,6 @@
 import { Text } from "ink";
 import React, { useMemo } from "react";
-import reactRedux from "react-redux/lib/alternate-renderers.js";
+import { useSelector } from "react-redux/es/alternate-renderers.js";
 import {
   FIELD_HEIGHT_SIZE,
   FIELD_WIDTH_SIZE,
@@ -8,7 +8,6 @@ import {
   RootState,
 } from "../store.js";
 import { getAllPositions } from "../utils.js";
-const { useSelector } = reactRedux;
 
 const Header = () => {
   const status = useSelector((state: RootState) => state.status);
