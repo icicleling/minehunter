@@ -1,6 +1,8 @@
 import esbuild from "esbuild";
 import fs from "node:fs";
 
+const NODE_ENV = process.env.NODE_ENV;
+
 const fixNbindJS = {
   name: "fixNbindJS",
   setup(build) {
@@ -27,5 +29,5 @@ await esbuild.build({
     js: "import { createRequire } from 'module';const require = createRequire(import.meta.url);",
   },
   plugins: [fixNbindJS],
-  minify: true,
+  minify: NODE_ENV !== "development",
 });
