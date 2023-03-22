@@ -31,6 +31,10 @@
     "url": "https://github.com/icicleling/minehunter.git"
   },
   "ava": {
+    "ignoredByWatcher": [
+      "coverage",
+      "dist"
+    ],
     "extensions": {
       "ts": "module"
     },

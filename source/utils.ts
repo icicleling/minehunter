@@ -1,5 +1,11 @@
 import randomInteger from "random-int";
-import { Cell, GameStore, Position } from "./interface.js";
+import {
+  Difficulty,
+  EASY_DIFFICULTY_CONFIG,
+  HARD_DIFFICULTY_CONFIG,
+  MEDIUM_DIFFICULTY_CONFIG,
+} from "./constants.js";
+import { Cell, DifficultyConfig, GameStore, Position } from "./interface.js";
 
 export const getAllPositions = (
   fieldWidth: number,
@@ -78,8 +84,8 @@ export const getReadyCells = (
   fieldWidth: number,
   fieldHeight: number
 ): GameStore["cells"] =>
-  [...Array(fieldWidth).keys()].map(() =>
-    [...Array(fieldHeight).keys()].map((): Cell => getCell())
+  [...Array(fieldHeight).keys()].map(() =>
+    [...Array(fieldWidth).keys()].map((): Cell => getCell())
   );
 
 export const checkWin = (cells: Readonly<GameStore["cells"]>): boolean => {
@@ -110,4 +116,21 @@ export const getFieldSize = (
   const fieldWidth = cells[0]?.length || 0;
   const fieldHeight = cells.length;
   return { fieldWidth, fieldHeight };
+};
+
+export const getInitialState = (state?: Partial<GameStore>): GameStore => ({
+  cells: [],
+  cursorPosition: [0, 0],
+  difficulty: Difficulty.Easy,
+  status: "menu",
+  ...state,
+});
+
+export const getDiffcultyConfig = (
+  diffciulty: Difficulty
+): DifficultyConfig => {
+  if (diffciulty === Difficulty.Easy) return EASY_DIFFICULTY_CONFIG;
+  if (diffciulty === Difficulty.Medium) return MEDIUM_DIFFICULTY_CONFIG;
+  if (diffciulty === Difficulty.Hard) return HARD_DIFFICULTY_CONFIG;
+  throw RangeError;
 };

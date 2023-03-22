@@ -8,8 +8,8 @@ interface Props {
 }
 
 const MINES_COLOR: { [k: number]: TextProps["color"] } = {
-  1: "white",
-  2: "white",
+  1: "gray",
+  2: "gray",
   3: "yellow",
   4: "yellow",
   5: "magenta",

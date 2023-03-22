@@ -1,24 +1,22 @@
-import { Text } from "ink";
+import { Box, Text } from "ink";
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux/es/alternate-renderers.js";
-import {
-  FIELD_HEIGHT_SIZE,
-  FIELD_WIDTH_SIZE,
-  MINES_COUNT,
-  RootState,
-} from "../store.js";
-import { getAllPositions } from "../utils.js";
+import { RootState } from "../store.js";
+import { getAllPositions, getDiffcultyConfig } from "../utils.js";
 
-const Header = () => {
+const HeaderText = () => {
   const status = useSelector((state: RootState) => state.status);
   const cells = useSelector((state: RootState) => state.cells);
+  const difficulty = useSelector((state: RootState) => state.difficulty);
 
   const unflagMineCount = useMemo(() => {
-    const allPosition = getAllPositions(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE);
+    const { fieldWidthSize, fieldHeightSize, minesCount } =
+      getDiffcultyConfig(difficulty);
+    const allPosition = getAllPositions(fieldWidthSize, fieldHeightSize);
     const allFlagCount = allPosition.filter(
       ([x, y]) => cells[y]?.[x]?.isFlag
     ).length;
-    return MINES_COUNT - allFlagCount;
+    return minesCount - allFlagCount;
   }, [cells]);
 
   if (status === "playing")
@@ -33,6 +31,18 @@ const Header = () => {
   if (status === "fail") return <Text>Game Over</Text>;
 
   return <Text>New Game</Text>;
+};
+
+const Header = () => {
+  const cells = useSelector((state: RootState) => state.cells);
+  const borderSize = 2;
+  const widthSize = (cells?.[0]?.length || 0) + borderSize;
+
+  return (
+    <Box justifyContent="center" width={widthSize}>
+      <HeaderText />
+    </Box>
+  );
 };
 
 export default Header;

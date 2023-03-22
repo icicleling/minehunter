@@ -1,38 +1,32 @@
-import reduxToolkit from "@reduxjs/toolkit";
-import { Cell, GameStore, Position } from "./interface.js";
+import reduxToolkit, { PayloadAction } from "@reduxjs/toolkit";
+import { Difficulty } from "./constants.js";
+import { Position } from "./interface.js";
 import {
   checkWin,
   generateMinePositions,
   getAroundMinesTotal,
   getAroundPositions,
+  getDiffcultyConfig,
   getFieldSize,
+  getInitialState,
   getReadyCells,
 } from "./utils.js";
 const { configureStore, createSlice } = reduxToolkit;
 
-export const FIELD_WIDTH_SIZE = 9;
-export const FIELD_HEIGHT_SIZE = 9;
-export const MINES_COUNT = 10;
-
-const cells: Cell[][] = getReadyCells(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE);
-
-export const initialState: GameStore = {
-  cells,
-  status: "ready",
-  cursorPosition: [0, 0],
-};
-
 const gameStore = createSlice({
   name: "game",
-  initialState,
+  initialState: getInitialState(),
   reducers: {
     open(state) {
       if (state.status === "win" || state.status === "fail") return;
       if (state.status === "ready") {
+        const { fieldWidthSize, fieldHeightSize, minesCount } =
+          getDiffcultyConfig(state.difficulty);
+
         const minePostions = generateMinePositions(
-          FIELD_WIDTH_SIZE,
-          FIELD_HEIGHT_SIZE,
-          MINES_COUNT,
+          fieldWidthSize,
+          fieldHeightSize,
+          minesCount,
           state.cursorPosition
         );
 
@@ -81,10 +75,8 @@ const gameStore = createSlice({
 
       if (checkWin(state.cells)) state.status = "win";
     },
-    restart(state) {
-      state.cells = initialState.cells;
-      state.cursorPosition = initialState.cursorPosition;
-      state.status = initialState.status;
+    restart() {
+      return getInitialState();
     },
     up(state) {
       const [x, y] = state.cursorPosition;
@@ -93,7 +85,7 @@ const gameStore = createSlice({
     },
     down(state) {
       const [x, y] = state.cursorPosition;
-      if (y + 1 > FIELD_HEIGHT_SIZE - 1) return;
+      if (y + 1 > state.cells.length - 1) return;
       state.cursorPosition = [x, y + 1];
     },
     left(state) {
@@ -103,8 +95,18 @@ const gameStore = createSlice({
     },
     right(state) {
       const [x, y] = state.cursorPosition;
-      if (x + 1 > FIELD_WIDTH_SIZE - 1) return;
+      const rowLength = state.cells?.[0]?.length;
+      if (!rowLength) return;
+      if (x + 1 > rowLength - 1) return;
       state.cursorPosition = [x + 1, y];
+    },
+    setDifficulty(state, action: PayloadAction<Difficulty>) {
+      state.difficulty = action.payload;
+      state.status = "ready";
+      const { fieldWidthSize, fieldHeightSize } = getDiffcultyConfig(
+        action.payload
+      );
+      state.cells = getReadyCells(fieldWidthSize, fieldHeightSize);
     },
   },
 });

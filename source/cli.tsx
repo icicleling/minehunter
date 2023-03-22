@@ -2,7 +2,7 @@
 import React from "react";
 import { render } from "ink";
 import meow from "meow";
-import App from "./ui.js";
+import App from "./App.js";
 import store from "./store.js";
 import { Provider } from "react-redux/es/alternate-renderers.js";
 
@@ -13,7 +13,7 @@ meow(
 
   Game Operation
     [↑/↓/←/→]  Move
-    [space]    Open cell
+    [space]    Open cell / Confirm
     [f]        Flag
     [r]        Restart
     [q]        Quit

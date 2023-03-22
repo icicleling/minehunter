@@ -1,53 +1,44 @@
 import test from "ava";
+import { Difficulty, EASY_DIFFICULTY_CONFIG } from "./constants.js";
 import { GameStore, Position } from "./interface.js";
-import {
-  actions,
-  FIELD_HEIGHT_SIZE,
-  FIELD_WIDTH_SIZE,
-  initialState,
-  reducer,
-} from "./store.js";
-import { getCell, getReadyCells } from "./utils.js";
+import { actions, reducer } from "./store.js";
+import { getCell, getInitialState, getReadyCells } from "./utils.js";
 
 test("initial cursor position should be [0,0]", (t) => {
-  const position = reducer(initialState, { type: undefined }).cursorPosition;
+  const state = getInitialState();
+
+  const position = reducer(state, { type: undefined }).cursorPosition;
 
   t.deepEqual(position, [0, 0]);
 });
 
-test("initial field size should be 9x9", (t) => {
-  const heightSize = reducer(initialState, { type: undefined }).cells.length;
-  const widthSize = reducer(initialState, { type: undefined }).cells[0]?.length;
+test("initial field size should be 0", (t) => {
+  const state = getInitialState();
 
-  t.is(heightSize, 9);
-  t.is(widthSize, 9);
+  const size = reducer(state, { type: undefined }).cells.length;
+
+  t.is(size, 0);
 });
 
-test("initial game status should be 'ready'", (t) => {
-  const status = reducer(initialState, { type: undefined }).status;
+test("initial game status should be 'menu'", (t) => {
+  const state = getInitialState();
 
-  t.is(status, "ready");
+  const status = reducer(state, { type: undefined }).status;
+
+  t.is(status, "menu");
 });
 
 test("basic move", (t) => {
-  const cursorPosition: Position = [1, 1];
+  const state = getInitialState({
+    cells: getReadyCells(9, 9),
+    status: "playing",
+    cursorPosition: [1, 1],
+  });
 
-  const postionAfterUp = reducer(
-    { ...initialState, cursorPosition },
-    actions.up()
-  ).cursorPosition;
-  const positionAfterDown = reducer(
-    { ...initialState, cursorPosition },
-    actions.down()
-  ).cursorPosition;
-  const positionAfterLeft = reducer(
-    { ...initialState, cursorPosition },
-    actions.left()
-  ).cursorPosition;
-  const positionAfterRight = reducer(
-    { ...initialState, cursorPosition },
-    actions.right()
-  ).cursorPosition;
+  const postionAfterUp = reducer(state, actions.up()).cursorPosition;
+  const positionAfterDown = reducer(state, actions.down()).cursorPosition;
+  const positionAfterLeft = reducer(state, actions.left()).cursorPosition;
+  const positionAfterRight = reducer(state, actions.right()).cursorPosition;
 
   t.deepEqual(postionAfterUp, [1, 0]);
   t.deepEqual(positionAfterDown, [1, 2]);
@@ -58,21 +49,22 @@ test("basic move", (t) => {
 test("edge movement should not work", (t) => {
   const topLeftPosition: Position = [0, 0];
   const bottomRightPosition: Position = [8, 8];
+  const state = getInitialState();
 
   const postionAfterUp = reducer(
-    { ...initialState, cursorPosition: topLeftPosition },
+    { ...state, cursorPosition: topLeftPosition },
     actions.up()
   ).cursorPosition;
   const positionAfterDown = reducer(
-    { ...initialState, cursorPosition: bottomRightPosition },
+    { ...state, cursorPosition: bottomRightPosition },
     actions.down()
   ).cursorPosition;
   const positionAfterLeft = reducer(
-    { ...initialState, cursorPosition: topLeftPosition },
+    { ...state, cursorPosition: topLeftPosition },
     actions.left()
   ).cursorPosition;
   const positionAfterRight = reducer(
-    { ...initialState, cursorPosition: bottomRightPosition },
+    { ...state, cursorPosition: bottomRightPosition },
     actions.right()
   ).cursorPosition;
 
@@ -83,11 +75,11 @@ test("edge movement should not work", (t) => {
 });
 
 test("restart should reset game store", (t) => {
-  const changedState: GameStore = {
-    cells: [],
+  const changedState = getInitialState({
     cursorPosition: [5, 5],
     status: "win",
-  };
+  });
+  const initialState = getInitialState();
 
   const restartState = reducer(changedState, actions.restart());
 
@@ -95,11 +87,10 @@ test("restart should reset game store", (t) => {
 });
 
 test("flag should be invalid when the status is not palying", (t) => {
-  const winState: GameStore = {
+  const winState = getInitialState({
     cells: [[{ ...getCell() }]],
-    cursorPosition: [0, 0],
     status: "win",
-  };
+  });
   const failState: GameStore = {
     ...winState,
     status: "fail",
@@ -122,11 +113,10 @@ test("flag should be invalid when the status is not palying", (t) => {
 });
 
 test("flag should be invalid when the cell is opened", (t) => {
-  const state: GameStore = {
+  const state = getInitialState({
     cells: [[{ ...getCell({ isOpen: true }) }]],
-    cursorPosition: [0, 0],
     status: "playing",
-  };
+  });
 
   const flagAfterInOpenedStatus = reducer(state, actions.flag()).cells[0]?.[0]
     ?.isFlag;
@@ -135,11 +125,10 @@ test("flag should be invalid when the cell is opened", (t) => {
 });
 
 test("flag toggle", (t) => {
-  const state: GameStore = {
+  const state = getInitialState({
     cells: [[getCell(), getCell({ isMine: true })]],
-    cursorPosition: [0, 0],
     status: "playing",
-  };
+  });
 
   const toggleFlagOnce = reducer(state, actions.flag());
   const toggleFlagTwice = reducer(toggleFlagOnce, actions.flag());
@@ -151,11 +140,10 @@ test("flag toggle", (t) => {
 });
 
 test("flag all mines the game status should be win", (t) => {
-  const state: GameStore = {
+  const state = getInitialState({
     cells: [[getCell({ isMine: true })]],
-    cursorPosition: [0, 0],
     status: "playing",
-  };
+  });
 
   const statusAfterFlagState = reducer(state, actions.flag()).status;
 
@@ -163,11 +151,10 @@ test("flag all mines the game status should be win", (t) => {
 });
 
 test("open should be invalid when the status is win and fail", (t) => {
-  const winState: GameStore = {
+  const winState = getInitialState({
     cells: [[{ ...getCell() }]],
-    cursorPosition: [0, 0],
     status: "win",
-  };
+  });
   const failState: GameStore = {
     ...winState,
     status: "fail",
@@ -183,11 +170,13 @@ test("open should be invalid when the status is win and fail", (t) => {
 });
 
 test("generates mines after first open", (t) => {
-  const readyState: GameStore = {
-    cells: getReadyCells(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE),
-    cursorPosition: [0, 0],
+  const readyState = getInitialState({
+    cells: getReadyCells(
+      EASY_DIFFICULTY_CONFIG.fieldWidthSize,
+      EASY_DIFFICULTY_CONFIG.fieldHeightSize
+    ),
     status: "ready",
-  };
+  });
 
   const isMinesInState = reducer(readyState, actions.open).cells.some((cells) =>
     cells.some((item) => item.isMine)
@@ -198,11 +187,14 @@ test("generates mines after first open", (t) => {
 
 test("no mines around the cell when first open", (t) => {
   const testFunc = () => {
-    const readyState: GameStore = {
-      cells: getReadyCells(FIELD_WIDTH_SIZE, FIELD_HEIGHT_SIZE),
+    const readyState = getInitialState({
+      cells: getReadyCells(
+        EASY_DIFFICULTY_CONFIG.fieldWidthSize,
+        EASY_DIFFICULTY_CONFIG.fieldHeightSize
+      ),
       cursorPosition: [5, 5],
       status: "ready",
-    };
+    });
 
     const noMinesPositions: Position[] = (
       [
@@ -240,11 +232,10 @@ test("when a cell is opened, the adjacent 0 mines cell and it around should also
     [getCell({ minesAround: 1 }), getCell({ minesAround: 1 })],
     [getCell({ minesAround: 1 }), getCell({ isMine: true })],
   ];
-  const state: GameStore = {
+  const state = getInitialState({
     cells,
-    cursorPosition: [0, 0],
     status: "playing",
-  };
+  });
 
   const cellsAfterOpen = reducer(state, actions.open()).cells;
 
@@ -256,11 +247,11 @@ test("when a cell is opened, the adjacent 0 mines cell and it around should also
 
 test("game over if you open the mine", (t) => {
   const cells = [[getCell({ minesAround: 1 }), getCell({ isMine: true })]];
-  const state: GameStore = {
+  const state = getInitialState({
     cells,
     cursorPosition: [1, 0],
     status: "playing",
-  };
+  });
 
   const status = reducer(state, actions.open).status;
 
@@ -271,13 +262,52 @@ test("open all not mine cell, game won", (t) => {
   const cells = [
     [getCell(), getCell({ minesAround: 1 }), getCell({ isMine: true })],
   ];
-  const state: GameStore = {
+  const state = getInitialState({
     cells,
-    cursorPosition: [0, 0],
     status: "playing",
-  };
+  });
 
   const status = reducer(state, actions.open).status;
 
   t.is(status, "win");
+});
+
+test("check for changes in difficulty", (t) => {
+  const state = getInitialState();
+
+  const mediumDifficulty = reducer(
+    state,
+    actions.setDifficulty(Difficulty.Medium)
+  ).difficulty;
+
+  const hardDifficulty = reducer(
+    state,
+    actions.setDifficulty(Difficulty.Hard)
+  ).difficulty;
+
+  t.is(mediumDifficulty, Difficulty.Medium);
+  t.is(hardDifficulty, Difficulty.Hard);
+});
+
+test("change the difficulty should generate a different field and mines", (t) => {
+  const state = getInitialState();
+
+  const mediumState = reducer(state, actions.setDifficulty(Difficulty.Medium));
+  const hardState = reducer(state, actions.setDifficulty(Difficulty.Hard));
+
+  t.is(mediumState.cells.length, 16);
+  t.is(mediumState.cells?.[0]?.length, 16);
+  t.is(hardState.cells.length, 16);
+  t.is(hardState.cells?.[0]?.length, 30);
+});
+
+test("status should be ready after changing the difficulty", (t) => {
+  const state = getInitialState();
+
+  const status = reducer(
+    state,
+    actions.setDifficulty(Difficulty.Medium)
+  ).status;
+
+  t.is(status, "ready");
 });

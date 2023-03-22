@@ -33,7 +33,7 @@ $ minehunter --help
 
   Game Operation
     [↑/↓/←/→]  Move
-    [space]    Open cell
+    [space]    Open cell / Confirm 
     [f]        Flag
     [r]        Restart
     [q]        Quit
