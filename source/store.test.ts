@@ -49,7 +49,10 @@ test("basic move", (t) => {
 test("edge movement should not work", (t) => {
   const topLeftPosition: Position = [0, 0];
   const bottomRightPosition: Position = [8, 8];
-  const state = getInitialState();
+  const { fieldWidthSize, fieldHeightSize } = EASY_DIFFICULTY_CONFIG;
+  const state = getInitialState({
+    cells: getReadyCells(fieldWidthSize, fieldHeightSize),
+  });
 
   const postionAfterUp = reducer(
     { ...state, cursorPosition: topLeftPosition },

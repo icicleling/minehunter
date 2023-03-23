@@ -32,6 +32,7 @@ const gameStore = createSlice({
 
         minePostions.forEach(([x, y]) => {
           const cell = state.cells[y]?.[x];
+          /* c8 ignore next */
           if (!cell) return;
           cell.isMine = true;
         });
@@ -47,6 +48,7 @@ const gameStore = createSlice({
 
       const openCell = ([x, y]: Position) => {
         const cell = state.cells[y]?.[x];
+        /* c8 ignore next */
         if (!cell) return;
 
         if (cell.isFlag || cell.isOpen) return;
@@ -96,6 +98,7 @@ const gameStore = createSlice({
     right(state) {
       const [x, y] = state.cursorPosition;
       const rowLength = state.cells?.[0]?.length;
+      /* c8 ignore next */
       if (!rowLength) return;
       if (x + 1 > rowLength - 1) return;
       state.cursorPosition = [x + 1, y];

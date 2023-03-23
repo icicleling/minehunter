@@ -34,8 +34,10 @@ export const generateMinePositions = (
 
   const minePostions: Position[] = [];
   for (let i = 0; i < minesCount; i++) {
+    if (!allPositions.length) break;
     const index = randomInteger(0, allPositions.length - 1);
     const position = allPositions[index];
+    /* c8 ignore next */
     if (!position) throw RangeError();
     minePostions.push(position);
     allPositions.splice(index, 1);
@@ -132,5 +134,6 @@ export const getDiffcultyConfig = (
   if (diffciulty === Difficulty.Easy) return EASY_DIFFICULTY_CONFIG;
   if (diffciulty === Difficulty.Medium) return MEDIUM_DIFFICULTY_CONFIG;
   if (diffciulty === Difficulty.Hard) return HARD_DIFFICULTY_CONFIG;
+  /* c8 ignore next */
   throw RangeError;
 };
